@@ -235,8 +235,10 @@ def run(num_epochs, lr_shape, lr_height, epoch_to_start_from):
 
     if os.path.isfile(path + "model_epoch" + str(epoch_to_start_from) + ".pt") and epoch_to_start_from > 0:
         checkpoint = torch.load(path + "model_epoch" + str(epoch_to_start_from) + ".pt", map_location='cpu')
-        model.load_state_dict(checkpoint['model_state_dict'])
-        optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+        model_shape.load_state_dict(checkpoint['model_state_dict_shape'])
+        model_height.load_state_dict(checkpoint['model_state_dict_height'])
+        optimizer_shape.load_state_dict(checkpoint['optimizer_state_dict_shape'])
+        optimizer_height.load_state_dict(checkpoint['optimizer_state_dict_height'])
         epochs_done = checkpoint['epoch']
 
         overall_training_loss_shape = checkpoint['training_losses_shape']
