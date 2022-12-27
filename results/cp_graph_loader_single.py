@@ -1,14 +1,17 @@
 import os
 import torch
+import shutup
 import statistics as s
 import numpy as np
 
 import matplotlib.pyplot as plt
 
+shutup.please()
 
-def load_graphs_from_checkpoint(model_path, epoch):
-    if os.path.isfile(model_path + "model_epoch" + str(epoch) + ".pt"):
-        checkpoint = torch.load(model_path + "model_epoch" + str(epoch) + ".pt", map_location='cpu')
+
+def load_graphs_from_checkpoint(epoch):
+    if os.path.isfile("../model_epoch" + str(epoch) + ".pt"):
+        checkpoint = torch.load("../model_epoch" + str(epoch) + ".pt", map_location='cpu')
         overall_training_loss_shape = checkpoint['training_losses_shape']
         overall_training_loss_height = checkpoint['training_losses_height']
         overall_validation_loss_shape = checkpoint['validation_losses_shape']
@@ -104,11 +107,10 @@ def load_graphs_from_checkpoint(model_path, epoch):
         print('PRECISION valid: ' + str(overall_validation_precision[epoch - 1]))
 
     else:
-        print("No model found within {} and epoch {}".format(
-            model_path,
+        print("No model found with epoch {}".format(
             str(epoch)
         ))
 
 
 if __name__ == '__main__':
-    load_graphs_from_checkpoint("results_SmoothL1Loss_Adam_UNET_0.004/", 13)
+    load_graphs_from_checkpoint(28)

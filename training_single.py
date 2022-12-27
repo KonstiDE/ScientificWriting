@@ -368,8 +368,8 @@ def run(num_epochs, lr_shape, lr_height, epoch_to_start_from):
             'validation_f1s': overall_validation_f1,
             'validation_recalls': overall_validation_recall,
             'validation_precisions': overall_validation_precision,
-            'validation_mses': overall_training_mse,
-            'validation_ssims': overall_training_ssim,
+            'validation_mses': overall_validation_mse,
+            'validation_ssims': overall_validation_ssim,
 
             'early_stopping_shape': early_stopping_shape,
             'early_stopping_height': early_stopping_height

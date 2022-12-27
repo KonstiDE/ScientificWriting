@@ -117,6 +117,4 @@ def view_data_frame(path):
 
 
 if __name__ == '__main__':
-    os.chdir("C:/Users/s371513/Desktop/ScientificWriting/ScientificWriting")
-
-    view_data_frame("output/width200_height0.npz")
+    view_data_frame("../testfolder/Window(col_off=22778,row_off=30208,width=512,height=512).npz")
