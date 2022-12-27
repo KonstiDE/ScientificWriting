@@ -353,7 +353,7 @@ def run(num_epochs, lr_shape, lr_height, epoch_to_start_from):
             'training_losses_shape': overall_training_loss_shape,
             'training_losses_height': overall_training_loss_height,
             'validation_losses_shape': overall_validation_loss_shape,
-            'validation_losses_height': overall_tvalidation_loss_height,
+            'validation_losses_height': overall_validation_loss_height,
 
             'training_accuracies': overall_training_accuracy,
             'training_f1s': overall_training_f1,
@@ -373,7 +373,8 @@ def run(num_epochs, lr_shape, lr_height, epoch_to_start_from):
             'early_stopping_height': early_stopping_height
         }, path + "model_epoch" + str(epoch) + ".pt")
 
-        model.to(device)
+        model_shape.to(device)
+        model_height.to(device)
 
         metrics = np.array([
             overall_training_loss_shape,
