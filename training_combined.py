@@ -13,6 +13,7 @@ from builder.dataset_provider_combined import (
 
 from pytorchtools import EarlyStopping
 
+from torchmetrics.regression import MeanAbsoluteError
 from torchmetrics.regression import MeanSquaredError
 from torchmetrics.image import StructuralSimilarityIndexMeasure
 
@@ -22,15 +23,13 @@ shutup.please()
 from model.model_combined import UNET
 from configuration import (
     device,
-    path_train,
-    path_validation,
     batch_size,
     num_workers,
-    pin_memory
+    pin_memory,
 )
 
 
-def train(epoch, loader, loss_fn, optimizer, scaler, model, mse, ssim):
+def train(epoch, loader, loss_fn, optimizer, scaler, model, mae, mse, ssim):
     torch.enable_grad()
     model.train()
 
@@ -45,11 +44,7 @@ def train(epoch, loader, loss_fn, optimizer, scaler, model, mse, ssim):
         optimizer.zero_grad(set_to_none=True)
         data = data.to(device)
 
-        data[data < 0] = 0
-        target[target < 0] = 0
-
         data = model(data)
-        data[data < 0] = 0
 
         target = target.to(device).unsqueeze(1)
 
@@ -62,21 +57,22 @@ def train(epoch, loader, loss_fn, optimizer, scaler, model, mse, ssim):
 
         loss_value = loss.item()
 
-        running_mae.append(loss_value)
+        running_loss.append(loss_value)
+        running_mae.append(mae(data, target).item())
         running_mse.append(mse(data, target).item())
         running_ssim.append(ssim(data, target).item())
 
+        mae.reset()
         mse.reset()
         ssim.reset()
 
         loop.set_postfix(info="Epoch {}, train, loss={:.5f}".format(epoch, loss_value))
         running_loss.append(loss_value)
 
-    return s.mean(running_loss), s.mean(running_mae), \
-           s.mean(running_mse), s.mean(running_ssim)
+    return s.mean(running_loss), s.mean(running_mae), s.mean(running_mse), s.mean(running_ssim)
 
 
-def valid(epoch, loader, loss_fn, model, mse, ssim):
+def valid(epoch, loader, loss_fn, model, mae, mse, ssim):
     model.eval()
     torch.no_grad()
 
@@ -90,11 +86,7 @@ def valid(epoch, loader, loss_fn, model, mse, ssim):
     for batch_index, (data, target) in enumerate(loop):
         data = data.to(device)
 
-        data[data < 0] = 0
-        target[target < 0] = 0
-
         data = model(data)
-        data[data < 0] = 0
 
         target = target.to(device).unsqueeze(1)
 
@@ -103,18 +95,19 @@ def valid(epoch, loader, loss_fn, model, mse, ssim):
 
         loss_value = loss.item()
 
-        running_mae.append(loss_value)
+        running_loss.append(loss_value)
+        running_mae.append(mae(data, target).item())
         running_mse.append(mse(data, target).item())
         running_ssim.append(ssim(data, target).item())
 
+        mae.reset()
         mse.reset()
         ssim.reset()
 
         loop.set_postfix(info="Epoch {}, valid, loss={:.5f}".format(epoch, loss_value))
         running_loss.append(loss_value)
 
-    return s.mean(running_loss), s.mean(running_mae), \
-           s.mean(running_mse), s.mean(running_ssim)
+    return s.mean(running_loss), s.mean(running_mae), s.mean(running_mse), s.mean(running_ssim)
 
 
 def run(num_epochs, lr, epoch_to_start_from):
@@ -122,10 +115,11 @@ def run(num_epochs, lr, epoch_to_start_from):
 
     model = UNET(in_channels=4, out_channels=1).to(device)
     optimizer = optim.Adam(model.parameters(), lr=lr)
-    loss_fn = nn.SmoothL1Loss()
+    loss_fn = nn.L1Loss()
     scaler = torch.cuda.amp.GradScaler()
     early_stopping = EarlyStopping(patience=5, verbose=True)
 
+    torch_mae = MeanAbsoluteError().to(device)
     torch_mse = MeanSquaredError().to(device)
     torch_ssim = StructuralSimilarityIndexMeasure().to(device)
 
@@ -142,7 +136,7 @@ def run(num_epochs, lr, epoch_to_start_from):
     overall_validation_ssim = []
 
     path = "{}_{}_{}_{}_{}/".format(
-        "results",
+        "results_combined",
         str(loss_fn.__class__.__name__),
         str(optimizer.__class__.__name__),
         str(UNET.__qualname__),
@@ -174,8 +168,8 @@ def run(num_epochs, lr, epoch_to_start_from):
 
     model.to(device)
 
-    train_loader = get_loader(path_train, batch_size, 1, num_workers, pin_memory)
-    validation_loader = get_loader(path_validation, batch_size, 1, num_workers, pin_memory)
+    train_loader = get_loader("output/combined/train", batch_size, 1, num_workers, pin_memory)
+    validation_loader = get_loader("output/combined/validation", batch_size, 1, num_workers, pin_memory)
 
     for epoch in range(epochs_done + 1, num_epochs + 1):
         training_loss, training_mae, training_mse, training_ssim = train(
@@ -185,6 +179,7 @@ def run(num_epochs, lr, epoch_to_start_from):
             optimizer,
             scaler,
             model,
+            torch_mae,
             torch_mse,
             torch_ssim
         )
@@ -193,6 +188,7 @@ def run(num_epochs, lr, epoch_to_start_from):
             epoch,
             validation_loader,
             loss_fn, model,
+            torch_mae,
             torch_mse,
             torch_ssim
         )
@@ -248,4 +244,7 @@ def run(num_epochs, lr, epoch_to_start_from):
 
 
 if __name__ == '__main__':
-    run(num_epochs=100, lr=1e-05, epoch_to_start_from=0)
+    lrs = [1e-02, 1e-03, 1e-04, 1e-05, 1e-06]
+
+    for lr in lrs:
+        run(100, lr, epoch_to_start_from=0)

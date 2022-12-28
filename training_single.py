@@ -64,7 +64,7 @@ def train(epoch, loader, loss_fn_shape, loss_fn_height, optimizer_shape, optimiz
         target_shape = target_shape.to(device).unsqueeze(1)
         target_height = target_height.to(device).unsqueeze(1)
 
-        target_shape = torch.argmax(target_shape, dim=1, keepdim=True).float()
+        target_shape = torch.round(target_shape)
 
         with torch.cuda.amp.autocast():
             prediction_shape = model_shape(data)
@@ -137,7 +137,7 @@ def valid(epoch, loader, loss_fn_shape, loss_fn_height, model_shape, model_heigh
         target_shape = target_shape.to(device).unsqueeze(1)
         target_height = target_height.to(device).unsqueeze(1)
 
-        target_shape = torch.argmax(target_shape, dim=1, keepdim=True).float()
+        target_shape = torch.round(target_shape)
 
         with torch.no_grad():
             prediction_shape = model_shape(data)
@@ -218,7 +218,7 @@ def run(num_epochs, lr_shape, lr_height, epoch_to_start_from):
     overall_validation_precision = []
 
     path = "{}_{}_{}_{}_{}_{}_{}_{}_{}_{}/".format(
-        "results",
+        "results_single",
         str(loss_fn_shape.__class__.__name__),
         str(loss_fn_height.__class__.__name__),
         str(optimizer_shape.__class__.__name__),

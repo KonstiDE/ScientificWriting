@@ -29,7 +29,7 @@ class NrwDataSet(Dataset):
                     dataframe["green"],
                     dataframe["blue"],
                     dataframe["nir"]
-                )).astype(dtype=np.int)), \
+                )).astype(dtype=np.int32)), \
             torch.Tensor(dataframe["dsm"])
 
 
