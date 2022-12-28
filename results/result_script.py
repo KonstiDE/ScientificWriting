@@ -95,11 +95,6 @@ def test(model_path, test_data_path):
 
         target_shape = torch.round(target_shape)
 
-        plt.imshow(target_shape.squeeze(0).squeeze(0).numpy(), cmap="Greys")
-        plt.show()
-
-        exit(200)
-
         with torch.no_grad():
             prediction_shape = model_shape(data)
             prediction_height = model_height(data, prediction_shape.detach().clone())
@@ -124,7 +119,8 @@ def test(model_path, test_data_path):
 
         loop.set_postfix(info="Progress {}".format(""))
 
-        prediction_shape = torch.argmax(prediction_shape, dim=1, keepdim=True)
+        prediction_shape = torch.sigmoid(prediction_shape)
+        prediction_shape = torch.round(prediction_shape)
 
         prediction_shape = prediction_shape.squeeze(0).squeeze(0).detach().cpu()
         target_shape = target_shape.squeeze(0).squeeze(0).detach().cpu()
@@ -198,6 +194,6 @@ def test(model_path, test_data_path):
 
 if __name__ == '__main__':
     test(
-        "../model_epoch28.pt",
+        "../model_epoch26.pt",
         "../testfolder/"
     )
