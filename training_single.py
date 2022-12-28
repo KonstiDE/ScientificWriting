@@ -174,7 +174,7 @@ def valid(epoch, loader, loss_fn_shape, loss_fn_height, model_shape, model_heigh
            s.mean(running_mse), s.mean(running_ssim)
 
 
-def run(num_epochs, lr_shape, lr_height, epoch_to_start_from):
+def run(num_epochs, lr_shape, lr_height, epoch_to_start_from, below_meters_equal_to_0):
     torch.cuda.empty_cache()
 
     model_shape = UNET_SHAPE(in_channels=4, out_channels=1).to(device)
@@ -186,7 +186,6 @@ def run(num_epochs, lr_shape, lr_height, epoch_to_start_from):
     scaler = torch.cuda.amp.GradScaler()
     early_stopping_shape = EarlyStopping(patience=5, verbose=True)
     early_stopping_height = EarlyStopping(patience=5, verbose=True)
-    below_meters_equal_to_0 = 3
 
     torch_mse = MeanSquaredError().to(device)
     torch_ssim = StructuralSimilarityIndexMeasure().to(device)
@@ -409,4 +408,8 @@ def run(num_epochs, lr_shape, lr_height, epoch_to_start_from):
 
 
 if __name__ == '__main__':
-    run(num_epochs=100, lr_shape=1e-05, lr_height=1e-05, epoch_to_start_from=0)
+    lrs = [1e-02, 1e-03, 1e-04, 1e-05, 1e-06]
+
+    for lr in lrs:
+        for m in range(1, 11):
+            run(num_epochs=100, lr_shape=lr, lr_height=1e-03, epoch_to_start_from=0, below_meters_equal_to_0=m)

@@ -17,6 +17,7 @@ class UNET_HEIGHT(nn.Module):
         self.down_convs = nn.ModuleList()
         self.up_convs = nn.ModuleList()
         self.up_trans = nn.ModuleList()
+        self.bns = nn.ModuleList()
         self.pool = nn.MaxPool2d(kernel_size=2, stride=2)
 
         for i in range(len(features) - 2):
