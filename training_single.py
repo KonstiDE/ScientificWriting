@@ -323,6 +323,9 @@ def run(num_epochs, lr_shape, lr_height, epoch_to_start_from, below_meters_equal
             ssim=torch_ssim
         )
 
+        if np.isnan(tr_loss_shape) or np.isnan(tr_loss_height) or np.isnan(val_loss_shape) or np.isnan(val_loss_height):
+            break
+
         overall_training_loss_shape.append(tr_loss_shape)
         overall_training_loss_height.append(tr_loss_height)
         overall_validation_loss_shape.append(val_loss_shape)
@@ -402,14 +405,11 @@ def run(num_epochs, lr_shape, lr_height, epoch_to_start_from, below_meters_equal
                 header="tloss_shape,tloss_height,vloss_shape,vloss_height,tacc,tf1,trec,tprec,tmse,tssim,vacc,vf1,vrec,vprec,vmse,vssim",
                 fmt='%s')
 
-        if early_stopping_shape.early_stop and early_stopping_height.early_stop:
+        if early_stopping_shape.early_stop or early_stopping_height.early_stop:
             print("Early stopping")
             break
 
 
 if __name__ == '__main__':
-    lrs = [1e-04, 1e-05, 1e-06]
-
-    for lr in lrs:
-        for m in range(2, 11):
-            run(num_epochs=100, lr_shape=lr, lr_height=1e-03, epoch_to_start_from=0, below_meters_equal_to_0=m)
+    for m in range(1, 10):
+        run(num_epochs=100, lr_shape=1e-04, lr_height=4e-03, epoch_to_start_from=0, below_meters_equal_to_0=m)
