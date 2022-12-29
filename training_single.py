@@ -408,8 +408,8 @@ def run(num_epochs, lr_shape, lr_height, epoch_to_start_from, below_meters_equal
 
 
 if __name__ == '__main__':
-    lrs = [1e-02, 1e-03, 1e-04, 1e-05, 1e-06]
+    lrs = [1e-04, 1e-05, 1e-06]
 
     for lr in lrs:
-        for m in range(1, 11):
+        for m in range(2, 11):
             run(num_epochs=100, lr_shape=lr, lr_height=1e-03, epoch_to_start_from=0, below_meters_equal_to_0=m)
