@@ -68,6 +68,8 @@ def train(epoch, loader, loss_fn_shape, loss_fn_height, optimizer_shape, optimiz
 
         with torch.cuda.amp.autocast():
             prediction_shape = model_shape(data)
+            prediction_shape = torch.nan_to_num(prediction_shape, nan=0.0)
+
             prediction_height = model_height(data, prediction_shape.detach().clone())
 
             loss_shape = loss_fn_shape(prediction_shape, target_shape)
@@ -322,9 +324,6 @@ def run(num_epochs, lr_shape, lr_height, epoch_to_start_from, below_meters_equal
             mse=torch_mse,
             ssim=torch_ssim
         )
-
-        if np.isnan(tr_loss_shape) or np.isnan(tr_loss_height) or np.isnan(val_loss_shape) or np.isnan(val_loss_height):
-            break
 
         overall_training_loss_shape.append(tr_loss_shape)
         overall_training_loss_height.append(tr_loss_height)
