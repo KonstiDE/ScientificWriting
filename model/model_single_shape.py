@@ -31,6 +31,7 @@ class UNET_SHAPE(nn.Module):
             self.up_trans.append(UpConv(features[i], features[i + 1]))
 
         self.final = FinalConv(features[-2])
+        self.softmax = nn.Sigmoid()
 
     def forward(self, x):
         skip_connections = []
@@ -50,7 +51,9 @@ class UNET_SHAPE(nn.Module):
             x = torch.cat((x, skip_connections[i]), dim=1)
             x = self.up_convs[i](x)
 
-        return self.final(x)
+        x = self.final(x)
+
+        return self.softmax(x)
 
 
 def test():
