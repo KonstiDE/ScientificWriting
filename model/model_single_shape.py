@@ -31,7 +31,7 @@ class UNET_SHAPE(nn.Module):
             self.up_trans.append(UpConv(features[i], features[i + 1]))
 
         self.final = FinalConv(features[-2])
-        self.softmax = nn.Sigmoid()
+        self.sigmoid = nn.Sigmoid()
 
     def forward(self, x):
         skip_connections = []
@@ -53,7 +53,7 @@ class UNET_SHAPE(nn.Module):
 
         x = self.final(x)
 
-        return self.softmax(x)
+        return self.sigmoid(x)
 
 
 def test():

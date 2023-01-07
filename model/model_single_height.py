@@ -51,8 +51,10 @@ class UNET_HEIGHT(nn.Module):
         x = self.bottleneck(x)
 
         for t in range(len(skip_connections)):
-            masks[t] = self.sigmoid(masks[t])
-            skip_connections[t] = torch.multiply(skip_connections[t], masks[t])
+            combined_addition = torch.multiply(skip_connections[t], masks[t])
+            skip_connections[t] = torch.add(skip_connections[t], combined_addition)
+
+            del combined_addition
 
         skip_connections = skip_connections[::-1]
 

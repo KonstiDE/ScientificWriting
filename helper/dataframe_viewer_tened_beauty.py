@@ -12,13 +12,14 @@ from rasterio.plot import show
 
 
 def view_data_frame(path):
-    if path.endswith(".npz"):
-        data_frame = np.load(path, allow_pickle=True)
+    files = os.listdir(path)
+
+    for file in files:
+        data_frame = np.load(os.path.join(path, file), allow_pickle=True)
 
         red = data_frame["red"]
         green = data_frame["green"]
         blue = data_frame["blue"]
-        nir = data_frame["nir"]
 
         below1 = data_frame["dsm_below1"]
         below2 = data_frame["dsm_below2"]
@@ -31,6 +32,8 @@ def view_data_frame(path):
         below9 = data_frame["dsm_below9"]
         below10 = data_frame["dsm_below10"]
 
+        dsm = data_frame["dsm_og"]
+
         assert (below1[np.where(below1 == 0)].size + below1[np.where(below1 == 1)].size == 512*512)
         assert (below2[np.where(below2 == 0)].size + below2[np.where(below2 == 1)].size == 512 * 512)
         assert (below3[np.where(below3 == 0)].size + below3[np.where(below3 == 1)].size == 512 * 512)
@@ -42,88 +45,45 @@ def view_data_frame(path):
         assert (below9[np.where(below9 == 0)].size + below9[np.where(below9 == 1)].size == 512 * 512)
         assert (below10[np.where(below10 == 0)].size + below10[np.where(below10 == 1)].size == 512 * 512)
 
+        fig, axs = plt.subplots(4, 3, figsize=(14, 18))
+
+        for i in range(4):
+            for t in range(3):
+                axs[i][t].set_xticklabels([])
+                axs[i][t].set_yticklabels([])
+
         red_normalized = (red * (1 / red.max()))
         green_normalized = (green * (1 / green.max()))
         blue_normalized = (blue * (1 / blue.max()))
 
         beauty = np.dstack((blue_normalized, green_normalized, red_normalized))
-        plt.imshow(beauty)
-        plt.title("RGB Composition")
-        plt.show()
 
-        plt.imshow(red, cmap='Reds_r')
-        plt.colorbar()
-        plt.title("Red")
-        plt.show()
+        frame = plt.gca()
+        frame.axes.get_xaxis().set_ticks([])
+        frame.axes.get_yaxis().set_ticks([])
 
-        plt.imshow(green, cmap='Greens_r')
-        plt.colorbar()
-        plt.title("Green")
-        plt.show()
+        fig.patch.set_facecolor('white')
 
-        plt.imshow(blue, cmap='Blues_r')
-        plt.colorbar()
-        plt.title("Blue")
-        plt.show()
+        axs[0][0].imshow(beauty)
+        axs[0][1].imshow(dsm, cmap='viridis')
+        axs[0][2].imshow(below1, cmap='copper')
+        axs[1][0].imshow(below2, cmap='copper')
+        axs[1][1].imshow(below3, cmap='copper')
+        axs[1][2].imshow(below4, cmap='copper')
+        axs[2][0].imshow(below5, cmap='copper')
+        axs[2][1].imshow(below6, cmap='copper')
+        axs[2][2].imshow(below7, cmap='copper')
+        axs[3][0].imshow(below8, cmap='copper')
+        axs[3][1].imshow(below9, cmap='copper')
+        axs[3][2].imshow(below10, cmap='copper')
 
-        plt.imshow(nir, cmap='Purples_r')
-        plt.colorbar()
-        plt.title("Near Infrared")
-        plt.show()
-
-        plt.imshow(below1, cmap='Greys_r')
-        plt.title("GT < 1")
-        plt.colorbar()
-        plt.show()
-
-        plt.imshow(below2, cmap='Greys_r')
-        plt.title("GT < 2")
-        plt.colorbar()
-        plt.show()
-
-        plt.imshow(below3, cmap='Greys_r')
-        plt.title("GT < 3")
-        plt.colorbar()
-        plt.show()
-
-        plt.imshow(below4, cmap='Greys_r')
-        plt.title("GT < 4")
-        plt.colorbar()
-        plt.show()
-
-        plt.imshow(below5, cmap='Greys_r')
-        plt.title("GT < 5")
-        plt.colorbar()
-        plt.show()
-
-        plt.imshow(below6, cmap='Greys_r')
-        plt.title("GT < 6")
-        plt.colorbar()
-        plt.show()
-
-        plt.imshow(below7, cmap='Greys_r')
-        plt.title("GT < 7")
-        plt.colorbar()
-        plt.show()
-
-        plt.imshow(below8, cmap='Greys_r')
-        plt.title("GT < 8")
-        plt.colorbar()
-        plt.show()
-
-        plt.imshow(below9, cmap='Greys_r')
-        plt.title("GT < 9")
-        plt.colorbar()
-        plt.show()
-
-        plt.imshow(below10, cmap='Greys_r')
-        plt.title("GT < 10")
-        plt.colorbar()
-        plt.show()
+        plt.tight_layout(pad=2)
+        plt.savefig(str.format("../output/{}.png", file))
+        plt.close(fig)
 
     else:
         print("{} is not a valid data frame".format(path))
 
 
 if __name__ == '__main__':
-    view_data_frame("../output/single_belows/test/Window(col_off=31385,row_off=25088,width=512,height=512).npz")
+    view_data_frame("../output/single_belows/test/")

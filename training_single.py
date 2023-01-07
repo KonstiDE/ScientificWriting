@@ -410,4 +410,5 @@ def run(num_epochs, lr_shape, lr_height, epoch_to_start_from, below_meters_equal
 
 
 if __name__ == '__main__':
-    run(num_epochs=100, lr_shape=1e-05, lr_height=1e-04, epoch_to_start_from=0, below_meters_equal_to_0=3)
+    for i in range(1, 11):
+        run(num_epochs=100, lr_shape=1e-05, lr_height=1e-05, epoch_to_start_from=0, below_meters_equal_to_0=i)
