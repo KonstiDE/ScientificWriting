@@ -64,7 +64,7 @@ def test(model_path, test_data_path, m):
         percentage_load=1,
         pin_memory=pin_memory,
         num_workers=num_workers,
-        below_m=3,
+        below_m=m,
         shuffle=True
     )
     c = 0
@@ -163,9 +163,6 @@ def test(model_path, test_data_path, m):
         axs[4].set_xticklabels([])
         axs[4].set_yticklabels([])
         plt.colorbar(im, ax=axs[4])
-        plt.show()
-
-        exit(94)
 
         fig.suptitle("ACC: {:.3f}, F1: {:.3f}, REC: {:.3f}, PREC: {:.3f}, MAE: {:.3f}, MSE: {:.3f}, SSIM: {:.3f}".format(
             running_accuracy[-1],
