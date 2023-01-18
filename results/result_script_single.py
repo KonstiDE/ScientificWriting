@@ -43,6 +43,10 @@ sys.path.append(os.getcwd())
 import shutup
 shutup.please()
 
+import ntpath
+
+from pathlib import Path
+
 
 def test(model_path, test_data_path, m):
     model_shape = UNET_SHAPE(in_channels=4, out_channels=1)
@@ -65,7 +69,7 @@ def test(model_path, test_data_path, m):
         pin_memory=pin_memory,
         num_workers=num_workers,
         below_m=m,
-        shuffle=True
+        shuffle=False
     )
     c = 0
     
@@ -88,7 +92,7 @@ def test(model_path, test_data_path, m):
     running_recall = []
     running_precision = []
 
-    for batch_index, (data, target_shape, target_height) in enumerate(loop):
+    for batch_index, (name, data, target_shape, target_height) in enumerate(loop):
         data = data.to(device)
 
         target_shape = target_shape.to(device).unsqueeze(1)
@@ -118,8 +122,6 @@ def test(model_path, test_data_path, m):
         mse.reset()
         ssim.reset()
 
-        loop.set_postfix(info="Progress {}".format(""))
-
         prediction_shape = torch.round(prediction_shape)
 
         prediction_shape = prediction_shape.squeeze(0).squeeze(0).detach().cpu()
@@ -138,7 +140,7 @@ def test(model_path, test_data_path, m):
 
         beauty = np.dstack((blue_normalized, green_normalized, red_normalized))
 
-        fig, axs = plt.subplots(1, 5, figsize=(28, 5))
+        fig, axs = plt.subplots(1, 6, figsize=(35, 5))
 
         im = axs[0].imshow(beauty)
         axs[0].set_xticklabels([])
@@ -164,6 +166,11 @@ def test(model_path, test_data_path, m):
         axs[4].set_yticklabels([])
         plt.colorbar(im, ax=axs[4])
 
+        im = axs[5].imshow(abs(target_height - prediction_height), cmap="turbo")
+        axs[5].set_xticklabels([])
+        axs[5].set_yticklabels([])
+        plt.colorbar(im, ax=axs[5])
+
         fig.suptitle("ACC: {:.3f}, F1: {:.3f}, REC: {:.3f}, PREC: {:.3f}, MAE: {:.3f}, MSE: {:.3f}, SSIM: {:.3f}".format(
             running_accuracy[-1],
             running_f1[-1],
@@ -174,11 +181,12 @@ def test(model_path, test_data_path, m):
             running_ssim[-1]
         ), fontsize=20)
 
-        plt.savefig("B:/projects/PycharmProjects/ScientificWriting/output/best_of_models/results_single_BCEWithLogitsLoss_L1Loss_Adam_Adam_UNET_SHAPE_UNET_HEIGHT_1e-05_1e-05_below" + str(m) + "/results/" + str(c) + ".png")
+        loop.set_postfix(info="Progress {}".format(Path(name[0]).name))
+
+        plt.savefig("B:/projects/PycharmProjects/ScientificWriting/output/best_of_models/results_single_BCEWithLogitsLoss_L1Loss_Adam_Adam_UNET_SHAPE_UNET_HEIGHT_1e-05_1e-05_below" + str(m) + "/results/" + os.path.basename(name[0]) + ".png")
         plt.close(fig)
 
         c += 1
-
 
     file = open("B:/projects/PycharmProjects/ScientificWriting/output/best_of_models/results_single_BCEWithLogitsLoss_L1Loss_Adam_Adam_UNET_SHAPE_UNET_HEIGHT_1e-05_1e-05_below" + str(m) + "/results/results.txt", "w+")
     file.write("ACC: {}, F1: {}, REC: {}, PREC: {}, MAE: {}, MSE: {}, SSIM: {}".format(
@@ -203,7 +211,7 @@ if __name__ == '__main__':
         "B:/projects/PycharmProjects/ScientificWriting/output/best_of_models/results_single_BCEWithLogitsLoss_L1Loss_Adam_Adam_UNET_SHAPE_UNET_HEIGHT_1e-05_1e-05_below5/model_epoch24.pt",
         "B:/projects/PycharmProjects/ScientificWriting/output/best_of_models/results_single_BCEWithLogitsLoss_L1Loss_Adam_Adam_UNET_SHAPE_UNET_HEIGHT_1e-05_1e-05_below6/model_epoch29.pt",
         "B:/projects/PycharmProjects/ScientificWriting/output/best_of_models/results_single_BCEWithLogitsLoss_L1Loss_Adam_Adam_UNET_SHAPE_UNET_HEIGHT_1e-05_1e-05_below7/model_epoch23.pt",
-        "B:/projects/PycharmProjects/ScientificWriting/output/best_of_models/results_single_BCEWithLogitsLoss_L1Loss_Adam_Adam_UNET_SHAPE_UNET_HEIGHT_1e-05_1e-05_below8/model_epoch20.pt",
+        "B:/projects/PycharmProjects/ScientificWriting/output/best_of_models/results_single_BCEWithLogitsLoss_L1Loss_Adam_Adam_UNET_SHAPE_UNET_HEIGHT_1e-05_1e-05_below8/model_epoch19.pt",
         "B:/projects/PycharmProjects/ScientificWriting/output/best_of_models/results_single_BCEWithLogitsLoss_L1Loss_Adam_Adam_UNET_SHAPE_UNET_HEIGHT_1e-05_1e-05_below9/model_epoch29.pt",
         "B:/projects/PycharmProjects/ScientificWriting/output/best_of_models/results_single_BCEWithLogitsLoss_L1Loss_Adam_Adam_UNET_SHAPE_UNET_HEIGHT_1e-05_1e-05_below10/model_epoch37.pt",
     ]

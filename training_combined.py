@@ -40,7 +40,7 @@ def train(epoch, loader, loss_fn, optimizer, scaler, model, mae, mse, ssim):
     running_mse = []
     running_ssim = []
 
-    for batch_index, (data, target) in enumerate(loop):
+    for batch_index, (_, data, target) in enumerate(loop):
         optimizer.zero_grad(set_to_none=True)
         data = data.to(device)
 
@@ -83,7 +83,7 @@ def valid(epoch, loader, loss_fn, model, mae, mse, ssim):
     running_mse = []
     running_ssim = []
 
-    for batch_index, (data, target) in enumerate(loop):
+    for batch_index, (_, data, target) in enumerate(loop):
         data = data.to(device)
 
         data = model(data)
@@ -114,7 +114,7 @@ def run(num_epochs, lr, epoch_to_start_from):
     torch.cuda.empty_cache()
 
     model = UNET(in_channels=4, out_channels=1).to(device)
-    optimizer = optim.Adam(model.parameters(), lr=lr)
+    optimizer = optim.Adam(model.parameters(), lr=lr, weight_decay=2e-04)
     loss_fn = nn.L1Loss()
     scaler = torch.cuda.amp.GradScaler()
     early_stopping = EarlyStopping(patience=5, verbose=True)
@@ -135,7 +135,7 @@ def run(num_epochs, lr, epoch_to_start_from):
     overall_training_ssim = []
     overall_validation_ssim = []
 
-    path = "{}_{}_{}_{}_{}/".format(
+    path = "{}_{}_{}_{}_{}_2/".format(
         "results_combined",
         str(loss_fn.__class__.__name__),
         str(optimizer.__class__.__name__),
@@ -244,7 +244,4 @@ def run(num_epochs, lr, epoch_to_start_from):
 
 
 if __name__ == '__main__':
-    lrs = [1e-02, 1e-03, 1e-04, 1e-05, 1e-06]
-
-    for lr in lrs:
-        run(100, lr, epoch_to_start_from=0)
+    run(100, lr=1e-03, epoch_to_start_from=0)

@@ -56,7 +56,7 @@ def train(epoch, loader, loss_fn_shape, loss_fn_height, optimizer_shape, optimiz
     running_recall = []
     running_precision = []
 
-    for batch_index, (data, target_shape, target_height) in enumerate(loop):
+    for batch_index, (_, data, target_shape, target_height) in enumerate(loop):
         optimizer_shape.zero_grad(set_to_none=True)
         optimizer_height.zero_grad(set_to_none=True)
         data = data.to(device)
@@ -133,7 +133,7 @@ def valid(epoch, loader, loss_fn_shape, loss_fn_height, model_shape, model_heigh
     running_recall = []
     running_precision = []
 
-    for batch_index, (data, target_shape, target_height) in enumerate(loop):
+    for batch_index, (_, data, target_shape, target_height) in enumerate(loop):
         data = data.to(device)
 
         target_shape = target_shape.to(device).unsqueeze(1)
@@ -181,8 +181,8 @@ def run(num_epochs, lr_shape, lr_height, epoch_to_start_from, below_meters_equal
 
     model_shape = UNET_SHAPE(in_channels=4, out_channels=1).to(device)
     model_height = UNET_HEIGHT(in_channels=4, out_channels=1).to(device)
-    optimizer_shape = optim.Adam(model_shape.parameters(), lr=lr_shape)
-    optimizer_height = optim.Adam(model_height.parameters(), lr=lr_height)
+    optimizer_shape = optim.Adam(model_shape.parameters(), lr=lr_shape, weight_decay=1e-04)
+    optimizer_height = optim.Adam(model_height.parameters(), lr=lr_height, weight_decay=1e-04)
     loss_fn_shape = nn.BCEWithLogitsLoss()
     loss_fn_height = nn.L1Loss()
     scaler = torch.cuda.amp.GradScaler()
@@ -276,7 +276,7 @@ def run(num_epochs, lr_shape, lr_height, epoch_to_start_from, below_meters_equal
     train_loader = get_loader(
         "output/single_belows/train",
         batch_size,
-        percentage_load=1,
+        percentage_load=0.25,
         below_m=below_meters_equal_to_0,
         num_workers=num_workers,
         pin_memory=pin_memory
@@ -285,7 +285,7 @@ def run(num_epochs, lr_shape, lr_height, epoch_to_start_from, below_meters_equal
     validation_loader = get_loader(
         "output/single_belows/validation",
         batch_size,
-        percentage_load=1,
+        percentage_load=0.25,
         below_m=below_meters_equal_to_0,
         num_workers=num_workers,
         pin_memory=pin_memory
@@ -410,5 +410,5 @@ def run(num_epochs, lr_shape, lr_height, epoch_to_start_from, below_meters_equal
 
 
 if __name__ == '__main__':
-    for i in range(1, 11):
-        run(num_epochs=100, lr_shape=1e-05, lr_height=1e-05, epoch_to_start_from=0, below_meters_equal_to_0=i)
+    for m in range(1, 11):
+        run(num_epochs=100, lr_shape=1e-05, lr_height=1e-05, epoch_to_start_from=0, below_meters_equal_to_0=m)

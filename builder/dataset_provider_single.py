@@ -14,15 +14,18 @@ class NrwDataSet(Dataset):
         self.below_m = below_m
 
         for u in range(int(percentage_load * len(files))):
-            self.dataset.append(os.path.join(npz_dir, random.choice(files)))
+            file = random.choice(files)
+            self.dataset.append(os.path.join(npz_dir, file))
+            files.remove(file)
 
     def __len__(self):
         return len(self.dataset)
 
     def __getitem__(self, index):
-        dataframe = np.load(self.dataset[index], allow_pickle=True)
+        dataframepath = self.dataset[index]
+        dataframe = np.load(dataframepath, allow_pickle=True)
 
-        return \
+        return dataframepath, \
             torch.Tensor(
                 np.stack((
                     dataframe["red"],

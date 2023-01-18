@@ -52,7 +52,7 @@ def test(model_path, test_data_path):
         percentage_load=1,
         pin_memory=pin_memory,
         num_workers=num_workers,
-        shuffle=True
+        shuffle=False
     )
     c = 0
     
@@ -66,7 +66,7 @@ def test(model_path, test_data_path):
     running_mse = []
     running_ssim = []
 
-    for batch_index, (data, target) in enumerate(loop):
+    for batch_index, (name, data, target) in enumerate(loop):
         data = data.to(device)
 
         target = target.to(device).unsqueeze(1)
@@ -97,21 +97,28 @@ def test(model_path, test_data_path):
 
         beauty = np.dstack((blue_normalized, green_normalized, red_normalized))
 
-        fig, axs = plt.subplots(1, 5, figsize=(28, 5))
+        fig, axs = plt.subplots(1, 4, figsize=(27, 5))
 
         im = axs[0].imshow(beauty)
         axs[0].set_xticklabels([])
         axs[0].set_yticklabels([])
 
-        im = axs[1].imshow(prediction, cmap="Greys")
+        im = axs[1].imshow(prediction, cmap="viridis")
         axs[1].set_xticklabels([])
         axs[1].set_yticklabels([])
+        im.set_clim(0, max(prediction.max(), target.max()))
         plt.colorbar(im, ax=axs[1])
 
         im = axs[2].imshow(target, cmap="viridis")
         axs[2].set_xticklabels([])
         axs[2].set_yticklabels([])
+        im.set_clim(0, max(prediction.max(), target.max()))
         plt.colorbar(im, ax=axs[2])
+
+        im = axs[3].imshow(abs(target - prediction), cmap="turbo")
+        axs[3].set_xticklabels([])
+        axs[3].set_yticklabels([])
+        plt.colorbar(im, ax=axs[3])
 
         fig.suptitle("MAE: {:.3f}, MSE: {:.3f}, SSIM: {:.3f}".format(
             running_mae[-1],
@@ -119,11 +126,10 @@ def test(model_path, test_data_path):
             running_ssim[-1]
         ), fontsize=20)
 
-        plt.savefig("B:/projects/PycharmProjects/ScientificWriting/output/best_of_models/results_combined_L1Loss_Adam_UNET_0.001/results/" + str(c) + ".png")
+        plt.savefig("B:/projects/PycharmProjects/ScientificWriting/output/best_of_models/results_combined_L1Loss_Adam_UNET_0.001/results/" + os.path.basename(name[0]) + ".png")
         plt.close(fig)
 
         c += 1
-
 
     file = open("B:/projects/PycharmProjects/ScientificWriting/output/best_of_models/results_combined_L1Loss_Adam_UNET_0.001/results/results.txt", "w+")
     file.write("MAE: {}, MSE: {}, SSIM: {}".format(
@@ -136,6 +142,6 @@ def test(model_path, test_data_path):
 
 if __name__ == '__main__':
     test(
-        "B:/projects/PycharmProjects/ScientificWriting/output/best_of_models/results_combined_L1Loss_Adam_UNET_0.001/results/model_epoch32.pt",
+        "B:/projects/PycharmProjects/ScientificWriting/output/best_of_models/results_combined_L1Loss_Adam_UNET_0.001/model_epoch32.pt",
         "B:/projects/PycharmProjects/ScientificWriting/output/combined/test/"
     )
