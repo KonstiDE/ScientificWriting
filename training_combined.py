@@ -135,7 +135,7 @@ def run(num_epochs, lr, epoch_to_start_from):
     overall_training_ssim = []
     overall_validation_ssim = []
 
-    path = "{}_{}_{}_{}_{}_2/".format(
+    path = "{}_{}_{}_{}_{}/".format(
         "results_combined",
         str(loss_fn.__class__.__name__),
         str(optimizer.__class__.__name__),
