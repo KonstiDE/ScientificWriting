@@ -125,6 +125,10 @@ def load_graphs_from_checkpoint(epoch, m):
         print('PRECISION valid: ' + str(overall_validation_precision[epoch - 6]))
         print("-------------------------------")
 
+        return overall_training_loss_shape, overall_validation_loss_shape, overall_training_loss_height, overall_validation_loss_height, \
+                overall_training_mse, overall_validation_mse, overall_training_ssim, overall_validation_ssim, \
+                overall_training_accuracy, overall_validation_accuracy
+
     else:
         print("No model found with epoch {}".format(
             str(epoch)
@@ -143,12 +147,55 @@ def find_max_epoch(path, m):
             if epoch > max_epoch:
                 max_epoch = epoch
 
-    load_graphs_from_checkpoint(max_epoch, m)
+    return load_graphs_from_checkpoint(max_epoch, m)
 
 
 if __name__ == '__main__':
+
+    overall_training_loss_shape = []
+    overall_training_loss_height = []
+    overall_validation_loss_shape = []
+    overall_validation_loss_height = []
+
+    overall_training_mse = []
+    overall_training_ssim = []
+    overall_training_accuracy = []
+    overall_validation_mse = []
+    overall_validation_ssim = []
+    overall_validation_accuracy = []
+
     for m in range(1, 11):
-        current = "B:/projects/PycharmProjects/ScientificWriting/output/best_of_models/results_single_BCEWithLogitsLoss_L1Loss_Adam_Adam_UNET_SHAPE_UNET_HEIGHT_1e-05_1e-05_below" + str(m)
+        current = "C:/Users/Konstantin/PycharmProjects/ScientificWriting/output/best_of_models/results_single_BCEWithLogitsLoss_L1Loss_Adam_Adam_UNET_SHAPE_UNET_HEIGHT_5e-05_1e-05_below" + str(m)
 
         os.chdir(current)
-        find_max_epoch(current, m)
+
+        overall_training_loss_shapev, overall_validation_loss_shapev, overall_training_loss_heightv, overall_validation_loss_heightv, \
+        overall_training_msev, overall_validation_msev, overall_training_ssimv, overall_validation_ssimv, \
+        overall_training_accuracyv, overall_validation_accuracyv = find_max_epoch(current, m)
+
+        overall_training_loss_shape.append(overall_training_loss_shapev)
+        overall_validation_loss_shape.append(overall_validation_loss_shapev)
+        overall_training_loss_height.append(overall_training_loss_heightv)
+        overall_validation_loss_height.append(overall_validation_loss_heightv)
+
+        overall_training_mse.append(overall_training_msev)
+        overall_validation_mse.append(overall_validation_msev)
+        overall_training_ssim.append(overall_training_ssimv)
+        overall_validation_ssim.append(overall_validation_ssimv)
+        overall_training_accuracy.append(overall_training_accuracyv)
+        overall_validation_accuracy.append(overall_validation_accuracyv)
+
+    print('LOSS train shape: ' + str(overall_training_loss_shape))
+    print('LOSS valid shape: ' + str(overall_validation_loss_shape))
+    print('LOSS train height: ' + str(overall_training_loss_height))
+    print('LOSS valid height: ' + str(overall_validation_loss_height))
+    print('MSE train: ' + str(overall_training_mse))
+    print('MSE valid: ' + str(overall_validation_mse))
+    print('SSIM train: ' + str(overall_training_ssim))
+    print('SSIM valid: ' + str(overall_validation_ssim))
+    print('ACCURACY train: ' + str(overall_training_accuracy))
+    print('ACCURACY valid: ' + str(overall_validation_accuracy))
+    print("-------------------------------")
+
+
+

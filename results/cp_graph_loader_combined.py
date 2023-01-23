@@ -20,7 +20,7 @@ def load_graphs_from_checkpoint(model_path, epoch):
 
         plt.figure()
         plt.plot(overall_training_loss, 'b', label="Training loss height")
-        plt.plot(overall_validation_loss, 'r', label="Validation loss")
+        plt.plot(overall_validation_loss, 'r', label="Validation loss height")
         plt.legend(loc="upper right", fontsize=18)
         plt.tick_params(labelsize=18)
         plt.show()
@@ -56,4 +56,4 @@ def load_graphs_from_checkpoint(model_path, epoch):
 
 
 if __name__ == '__main__':
-    load_graphs_from_checkpoint("../output/best_of_models/results_combined_L1Loss_Adam_UNET_0.001/", 32)
+    load_graphs_from_checkpoint("../output/best_of_models/results_combined_L1Loss_Adam_UNET_1e-05/", 28)
