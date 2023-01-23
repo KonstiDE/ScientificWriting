@@ -40,7 +40,7 @@ def load_graphs_from_checkpoint(epoch, m):
         plt.plot(overall_validation_loss_shape, 'r', label="Validation loss Shape")
         plt.legend(loc="upper right", fontsize=18)
         plt.tick_params(labelsize=18)
-        plt.savefig(str.format("loss_shape_{}.png", m))
+        #plt.savefig(str.format("loss_shape_{}.png", m))
         plt.close()
 
         plt.figure()
@@ -48,7 +48,7 @@ def load_graphs_from_checkpoint(epoch, m):
         plt.plot(overall_validation_loss_height, 'r', label="Validation loss Height")
         plt.legend(loc="upper right", fontsize=18)
         plt.tick_params(labelsize=18)
-        plt.savefig(str.format("loss_height_{}.png", m))
+        #plt.savefig(str.format("loss_height_{}.png", m))
         plt.close()
 
         plt.figure()
@@ -56,7 +56,7 @@ def load_graphs_from_checkpoint(epoch, m):
         plt.plot(overall_validation_mse, 'orange', label="Validation MSE")
         plt.legend(loc="upper right", fontsize=18)
         plt.tick_params(labelsize=18)
-        plt.savefig(str.format("mse_{}.png", m))
+        #plt.savefig(str.format("mse_{}.png", m))
         plt.close()
 
         plt.figure()
@@ -64,7 +64,7 @@ def load_graphs_from_checkpoint(epoch, m):
         plt.plot(overall_validation_ssim, 'orange', label="Validation SSIM")
         plt.legend(loc="lower right", fontsize=18)
         plt.tick_params(labelsize=18)
-        plt.savefig(str.format("ssim_{}.png", m))
+        #plt.savefig(str.format("ssim_{}.png", m))
         plt.close()
 
         plt.figure()
@@ -72,7 +72,7 @@ def load_graphs_from_checkpoint(epoch, m):
         plt.plot(overall_validation_accuracy, 'orange', label="Validation Accuracy")
         plt.legend(loc="lower right", fontsize=18)
         plt.tick_params(labelsize=18)
-        plt.savefig(str.format("accuracy_{}.png", m))
+        #plt.savefig(str.format("accuracy_{}.png", m))
         plt.close()
 
         plt.figure()
@@ -80,7 +80,7 @@ def load_graphs_from_checkpoint(epoch, m):
         plt.plot(overall_validation_f1, 'orange', label="Validation F1")
         plt.legend(loc="lower right", fontsize=18)
         plt.tick_params(labelsize=18)
-        plt.savefig(str.format("f1_{}.png", m))
+        #plt.savefig(str.format("f1_{}.png", m))
         plt.close()
 
         plt.figure()
@@ -88,7 +88,7 @@ def load_graphs_from_checkpoint(epoch, m):
         plt.plot(overall_validation_recall, 'orange', label="Validation Recall")
         plt.legend(loc="lower right", fontsize=18)
         plt.tick_params(labelsize=18)
-        plt.savefig(str.format("rec_{}.png", m))
+        #plt.savefig(str.format("rec_{}.png", m))
         plt.close()
 
         plt.figure()
@@ -96,7 +96,7 @@ def load_graphs_from_checkpoint(epoch, m):
         plt.plot(overall_validation_precision, 'orange', label="Validation Precision")
         plt.legend(loc="lower right", fontsize=18)
         plt.tick_params(labelsize=18)
-        plt.savefig(str.format("prec_{}.png", m))
+        #plt.savefig(str.format("prec_{}.png", m))
         plt.close()
 
         print("---------- Below " + str(m) + "m ----------")
@@ -125,9 +125,9 @@ def load_graphs_from_checkpoint(epoch, m):
         print('PRECISION valid: ' + str(overall_validation_precision[epoch - 6]))
         print("-------------------------------")
 
-        return overall_training_loss_shape, overall_validation_loss_shape, overall_training_loss_height, overall_validation_loss_height, \
-                overall_training_mse, overall_validation_mse, overall_training_ssim, overall_validation_ssim, \
-                overall_training_accuracy, overall_validation_accuracy
+        return overall_training_loss_shape[epoch - 6], overall_validation_loss_shape[epoch - 6], overall_training_loss_height[epoch - 6], overall_validation_loss_height[epoch - 6], \
+                overall_training_mse[epoch - 6], overall_validation_mse[epoch - 6], overall_training_ssim[epoch - 6], overall_validation_ssim[epoch - 6], \
+                overall_training_accuracy[epoch - 6], overall_validation_accuracy[epoch - 6]
 
     else:
         print("No model found with epoch {}".format(
@@ -165,7 +165,7 @@ if __name__ == '__main__':
     overall_validation_accuracy = []
 
     for m in range(1, 11):
-        current = "C:/Users/Konstantin/PycharmProjects/ScientificWriting/output/best_of_models/results_single_BCEWithLogitsLoss_L1Loss_Adam_Adam_UNET_SHAPE_UNET_HEIGHT_5e-05_1e-05_below" + str(m)
+        current = "B:/projects/PycharmProjects/ScientificWriting/output/best_of_models/results_single_BCEWithLogitsLoss_L1Loss_Adam_Adam_UNET_SHAPE_UNET_HEIGHT_5e-05_1e-05_below" + str(m)
 
         os.chdir(current)
 
@@ -173,17 +173,17 @@ if __name__ == '__main__':
         overall_training_msev, overall_validation_msev, overall_training_ssimv, overall_validation_ssimv, \
         overall_training_accuracyv, overall_validation_accuracyv = find_max_epoch(current, m)
 
-        overall_training_loss_shape.append(overall_training_loss_shapev)
-        overall_validation_loss_shape.append(overall_validation_loss_shapev)
-        overall_training_loss_height.append(overall_training_loss_heightv)
-        overall_validation_loss_height.append(overall_validation_loss_heightv)
+        overall_training_loss_shape.append(round(overall_training_loss_shapev, 3))
+        overall_validation_loss_shape.append(round(overall_validation_loss_shapev, 3))
+        overall_training_loss_height.append(round(overall_training_loss_heightv, 3))
+        overall_validation_loss_height.append(round(overall_validation_loss_heightv, 3))
 
-        overall_training_mse.append(overall_training_msev)
-        overall_validation_mse.append(overall_validation_msev)
-        overall_training_ssim.append(overall_training_ssimv)
-        overall_validation_ssim.append(overall_validation_ssimv)
-        overall_training_accuracy.append(overall_training_accuracyv)
-        overall_validation_accuracy.append(overall_validation_accuracyv)
+        overall_training_mse.append(round(overall_training_msev, 3))
+        overall_validation_mse.append(round(overall_validation_msev, 3))
+        overall_training_ssim.append(round(overall_training_ssimv, 3))
+        overall_validation_ssim.append(round(overall_validation_ssimv, 3))
+        overall_training_accuracy.append(round(overall_training_accuracyv, 3))
+        overall_validation_accuracy.append(round(overall_validation_accuracyv, 3))
 
     print('LOSS train shape: ' + str(overall_training_loss_shape))
     print('LOSS valid shape: ' + str(overall_validation_loss_shape))
