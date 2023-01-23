@@ -276,7 +276,7 @@ def run(num_epochs, lr_shape, lr_height, epoch_to_start_from, below_meters_equal
     train_loader = get_loader(
         "output/single_belows/train",
         batch_size,
-        percentage_load=0.25,
+        percentage_load=1,
         below_m=below_meters_equal_to_0,
         num_workers=num_workers,
         pin_memory=pin_memory
@@ -285,7 +285,7 @@ def run(num_epochs, lr_shape, lr_height, epoch_to_start_from, below_meters_equal
     validation_loader = get_loader(
         "output/single_belows/validation",
         batch_size,
-        percentage_load=0.25,
+        percentage_load=1,
         below_m=below_meters_equal_to_0,
         num_workers=num_workers,
         pin_memory=pin_memory
@@ -411,4 +411,4 @@ def run(num_epochs, lr_shape, lr_height, epoch_to_start_from, below_meters_equal
 
 if __name__ == '__main__':
     for m in range(1, 11):
-        run(num_epochs=100, lr_shape=1e-05, lr_height=1e-05, epoch_to_start_from=0, below_meters_equal_to_0=m)
+        run(num_epochs=100, lr_shape=5e-05, lr_height=1e-05, epoch_to_start_from=0, below_meters_equal_to_0=m)
