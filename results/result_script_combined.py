@@ -126,12 +126,12 @@ def test(model_path, test_data_path):
             running_ssim[-1]
         ), fontsize=20)
 
-        plt.savefig("B:/projects/PycharmProjects/ScientificWriting/output/best_of_models/results_combined_L1Loss_Adam_UNET_0.001/results/" + os.path.basename(name[0]) + ".png")
+        plt.savefig("B:/projects/PycharmProjects/ScientificWriting/output/best_of_models/results_combined_L1Loss_Adam_UNET_1e-05/results/" + os.path.basename(name[0]) + ".png")
         plt.close(fig)
 
         c += 1
 
-    file = open("B:/projects/PycharmProjects/ScientificWriting/output/best_of_models/results_combined_L1Loss_Adam_UNET_0.001/results/results.txt", "w+")
+    file = open("B:/projects/PycharmProjects/ScientificWriting/output/best_of_models/results_combined_L1Loss_Adam_UNET_1e-05/results/results.txt", "w+")
     file.write("MAE: {}, MSE: {}, SSIM: {}".format(
         str(s.mean(running_mae)),
         str(s.mean(running_mse)),
@@ -142,6 +142,6 @@ def test(model_path, test_data_path):
 
 if __name__ == '__main__':
     test(
-        "B:/projects/PycharmProjects/ScientificWriting/output/best_of_models/results_combined_L1Loss_Adam_UNET_0.001/model_epoch32.pt",
+        "B:/projects/PycharmProjects/ScientificWriting/output/best_of_models/results_combined_L1Loss_Adam_UNET_1e-05/model_epoch28.pt",
         "B:/projects/PycharmProjects/ScientificWriting/output/combined/test/"
     )
