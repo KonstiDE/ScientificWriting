@@ -146,12 +146,12 @@ def test(model_path, test_data_path, m):
         axs[0].set_xticklabels([])
         axs[0].set_yticklabels([])
 
-        im = axs[1].imshow(prediction_shape, cmap="Greys")
+        im = axs[1].imshow(prediction_shape, cmap="copper")
         axs[1].set_xticklabels([])
         axs[1].set_yticklabels([])
         plt.colorbar(im, ax=axs[1])
 
-        im = axs[2].imshow(target_shape, cmap="Greys")
+        im = axs[2].imshow(target_shape, cmap="copper")
         axs[2].set_xticklabels([])
         axs[2].set_yticklabels([])
         plt.colorbar(im, ax=axs[2])
@@ -205,7 +205,7 @@ if __name__ == '__main__':
 
     models = [
         "B:/projects/PycharmProjects/ScientificWriting/output/best_of_models/results_single_BCEWithLogitsLoss_L1Loss_Adam_Adam_UNET_SHAPE_UNET_HEIGHT_1e-05_1e-05_below1/model_epoch24.pt",
-        "B:/projects/PycharmProjects/ScientificWriting/output/best_of_models/results_single_BCEWithLogitsLoss_L1Loss_Adam_Adam_UNET_SHAPE_UNET_HEIGHT_1e-05_1e-05_below2/model_epoch10.pt",
+        "B:/projects/PycharmProjects/ScientificWriting/output/best_of_models/results_single_BCEWithLogitsLoss_L1Loss_Adam_Adam_UNET_SHAPE_UNET_HEIGHT_1e-05_1e-05_below2/model_epoch26.pt",
         "B:/projects/PycharmProjects/ScientificWriting/output/best_of_models/results_single_BCEWithLogitsLoss_L1Loss_Adam_Adam_UNET_SHAPE_UNET_HEIGHT_1e-05_1e-05_below3/model_epoch23.pt",
         "B:/projects/PycharmProjects/ScientificWriting/output/best_of_models/results_single_BCEWithLogitsLoss_L1Loss_Adam_Adam_UNET_SHAPE_UNET_HEIGHT_1e-05_1e-05_below4/model_epoch41.pt",
         "B:/projects/PycharmProjects/ScientificWriting/output/best_of_models/results_single_BCEWithLogitsLoss_L1Loss_Adam_Adam_UNET_SHAPE_UNET_HEIGHT_1e-05_1e-05_below5/model_epoch41.pt",
