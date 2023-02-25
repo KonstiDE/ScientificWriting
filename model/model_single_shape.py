@@ -8,7 +8,7 @@ from model.layers_single_shape import (
 
 
 class UNET_SHAPE(nn.Module):
-    def __init__(self, in_channels=3, out_channels=1, features=None):
+    def __init__(self, in_channels=4, out_channels=1, features=None):
         super(UNET_SHAPE, self).__init__()
 
         if features is None:

@@ -12,6 +12,7 @@ class NrwDataSet(Dataset):
 
         self.dataset = []
         self.below_m = below_m
+        self.npz_dir = npz_dir
 
         for u in range(int(percentage_load * len(files))):
             file = random.choice(files)
@@ -23,6 +24,21 @@ class NrwDataSet(Dataset):
 
     def __getitem__(self, index):
         dataframepath = self.dataset[index]
+        dataframe = np.load(dataframepath, allow_pickle=True)
+
+        return dataframepath, \
+            torch.Tensor(
+                np.stack((
+                    dataframe["red"],
+                    dataframe["green"],
+                    dataframe["blue"],
+                    dataframe["nir"]
+                )).astype(dtype=np.int32)), \
+            torch.Tensor(dataframe["dsm_below" + str(self.below_m)]), \
+            torch.Tensor(dataframe["dsm_og"])
+
+    def __getitem_by_name__(self, dataframename):
+        dataframepath = os.path.join(self.npz_dir, dataframename)
         dataframe = np.load(dataframepath, allow_pickle=True)
 
         return dataframepath, \
