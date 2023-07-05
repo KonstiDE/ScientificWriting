@@ -11,3 +11,8 @@ and one pixel-wise regression U-Net predicting the height of surface objects.
 The full architecture is depicted in the following figure:
 
 ![Architecture](readme/split_unet.png)
+\
+\
+The full paper can be found here:
+\
+<iframe width="100%" height="800" src="/paper/main.pdf">
